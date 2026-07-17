@@ -3,8 +3,25 @@ import pandas as pd
 from pandas import DataFrame
 import duckdb
 
+
+st.write("""
+# SQL SRS
+Spaced Repetition System SQL practice
+""")
+
+option = st.selectbox(
+    "What dog you like to review",
+    ["Joins","GroupBy","Windows Functions"],
+    index=None,
+    placeholder="Select a theme...",
+)
+
+st.write('You selected:', option)
+
+
 st.write('Interpréteur de requête SQL')
-data = {"a": [1, 2, 3], "b": [4, 5, 6]}
+
+data: dict= {"a": [1,2,3],"b":[4,5,6],"c":[7,8,9]}
 df: DataFrame = pd.DataFrame(data)
 
 tab1, tab2, tab3 = st.tabs(["SQL", "Dog", "Owl"])
