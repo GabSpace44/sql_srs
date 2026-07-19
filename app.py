@@ -20,6 +20,7 @@ cookie juice,2.5
 chocolatine,2
 muffin,3
 """
+# Test CI : mise en place des dataframes depuis les fichiers csv
 beverages: DataFrame = cast(DataFrame, pd.read_csv(io.StringIO(CSV)))
 food_items: DataFrame = cast(DataFrame, pd.read_csv(io.StringIO(CSV2)))
 
@@ -55,10 +56,8 @@ if SQL_QUERY:
         st.write("Error, some columns are missing")
     n_lines_difference = df_duckdb.shape[0] - solution_df.shape[0]
     if n_lines_difference != 0:
-        st.write(
-            f"""result has a {n_lines_difference} lines difference between
-            your solution_df and your query"""
-        )
+        st.write(f"""result has a {n_lines_difference} lines difference between
+            your solution_df and your query""")
 
     try:
         result = df_duckdb[solution_df.columns]
