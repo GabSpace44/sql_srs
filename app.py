@@ -20,7 +20,7 @@ cookie juice,2.5
 chocolatine,2
 muffin,3
 """
-beverages: DataFrame = cast(DataFrame, pd.read_csv(io.StringIO(CSV)))
+beverages: DataFrame = cast(DataFrame, pd.read_csv(io.StringIO(CSV))) # Test : CI ddnakjndkajzndjkazndjkqnksjdnqndjazndjz
 food_items: DataFrame = cast(DataFrame, pd.read_csv(io.StringIO(CSV2)))
 
 ANSWER_STR: str = """
