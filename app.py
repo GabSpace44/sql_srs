@@ -12,16 +12,13 @@ orange juice,2.5
 Expresso,2
 Tea,3
 '''
-
-beverages: DataFrame = cast(DataFrame,pd.read_csv(io.StringIO(csv)))
-
 csv2 = '''
 food_item,food_price
 cookie juice,2.5
 chocolatine,2
 muffin,3
 '''
-
+beverages: DataFrame = cast(DataFrame,pd.read_csv(io.StringIO(csv)))
 food_items: DataFrame = cast(DataFrame,pd.read_csv(io.StringIO(csv2)))
 
 answer = '''
@@ -30,8 +27,25 @@ CROSS JOIN food_items
 '''
 solution = duckdb.sql(answer).df()
 
+st.write("""
+# SQL SRS
+Spaced Repetition System SQL practice
+""")
+
 st.header("entrez your code:")
 sql_query = st.text_area(label="votre code SQL ici", key="user_input")
+
+
+
+with st.sidebar:
+    option = st.selectbox(
+        "What dog you like to review",
+        ["Joins","GroupBy","Windows Functions"],
+        index=None,
+        placeholder="Select a theme...",
+    )
+    st.write('You selected:', option)
+
 
 
 if sql_query:
