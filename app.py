@@ -15,7 +15,6 @@ if Path(f"{Path.cwd()}/data/").is_dir():
     pass
 else:
     with open(f"{Path.cwd()}/init_db.py") as file:
-        print("test")
         Path(f"{Path.cwd()}/data/").mkdir()
         exec(file.read())
         file.close()
