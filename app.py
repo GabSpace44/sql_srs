@@ -60,8 +60,14 @@ with st.sidebar:
 st.header("entrez your code:")
 SQL_QUERY: str = str(st.text_area(label="votre code SQL ici", key="user_input"))
 
-if SQL_QUERY:
 
+def check_users_solution(user_query: str) -> None:
+    """
+    Check that the user SQL query is correct by
+    :param user_query:
+    :return:
+    """
+    global e
     df_duckdb: DataFrame = con.execute(SQL_QUERY).df()
     if len(answer.columns) != len(df_duckdb.columns):
         st.write("Error, some columns are missing")
@@ -81,6 +87,10 @@ if SQL_QUERY:
         st.write("Error, your query is not what we expected")
 
     st.dataframe(df_duckdb, width=400)
+
+
+if SQL_QUERY:
+    check_users_solution(SQL_QUERY)
 else:
     st.write("Vous n'avez pas entrez de query sql.")
 
