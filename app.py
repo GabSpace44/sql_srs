@@ -7,7 +7,7 @@ import duckdb
 import pandas as pd
 import streamlit as st
 from pandas import DataFrame
-from init_db import  con
+from init_db import con
 from pathlib import Path
 
 st.write("""
@@ -19,7 +19,7 @@ Spaced Repetition System SQL practice
 with st.sidebar:
     option = st.selectbox(
         "What query do you like to review",
-        ["Joins", "GroupBy", "window_functions","cross_joins"],
+        ["Joins", "GroupBy", "window_functions", "cross_joins"],
         index=None,
         placeholder="Select a theme...",
     )
@@ -68,7 +68,7 @@ tab2, tab3 = st.tabs(["Tables", "Solution"])
 with tab2:
     if option:
         try:
-            exercise_tables = ast.literal_eval(exercise.loc[0,"tables"])
+            exercise_tables = ast.literal_eval(exercise.loc[0, "tables"])
             for table in exercise_tables:
                 st.write(f"Table : {table}")
                 st.write(con.execute(f"SELECT * FROM {table}"))
