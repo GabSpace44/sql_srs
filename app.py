@@ -15,7 +15,6 @@ if Path(f"{Path.cwd()}/data/").is_dir():
     pass
 else:
     with open(f"{Path.cwd()}/init_db.py") as file:
-        print("test")
         Path(f"{Path.cwd()}/data/").mkdir()
         exec(file.read())
         file.close()
@@ -56,13 +55,29 @@ with st.sidebar:
             answer_str: str = file.read()
             file.close()
         answer = con.execute(answer_str).df()
+        EXERCISE_NAME = exercise["exercise_name"][0]
+
+    if st.button("Reset"):
+        con.execute(f"""
+            UPDATE memory_state 
+            set last_reviewed='1970-01-01'
+            WHERE theme='{option}'
+        """)
+        st.session_state.user_input = ""
+        st.rerun()
 
 
-st.header("entrez your code:")
+st.header("enter your code:")
 SQL_QUERY: str = str(st.text_area(label="votre code SQL ici", key="user_input"))
 
-if SQL_QUERY:
 
+def check_users_solution(user_query: str) -> None:
+    """
+    Check that the user SQL query is correct by
+    :param user_query:
+    :return:
+    """
+    global e
     df_duckdb: DataFrame = con.execute(SQL_QUERY).df()
     if len(answer.columns) != len(df_duckdb.columns):
         st.write("Error, some columns are missing")
@@ -74,7 +89,8 @@ if SQL_QUERY:
     try:
         result = df_duckdb[answer.columns]
         if result.compare(answer).empty:
-            pass
+            st.write("Good job, this is correct !")
+            st.balloons()
         else:
             st.write("Error, the datas are not the same")
             st.dataframe(result.compare(answer))
@@ -82,8 +98,24 @@ if SQL_QUERY:
         st.write("Error, your query is not what we expected")
 
     st.dataframe(df_duckdb, width=400)
+
+
+if SQL_QUERY:
+    check_users_solution(SQL_QUERY)
 else:
     st.write("Vous n'avez pas entrez de query sql.")
+
+button_list: list[int | str] = [2, 7, 21]
+
+cols: list[st.delta_generator.DeltaGenerator] = st.columns(len(button_list))
+for col, n_day in zip(cols, button_list):
+    with col:
+        if st.button(f"review in {n_day} days"):
+            con.execute(f"""UPDATE memory_state
+                SET last_reviewed=strftime(date_add(current_date,{n_day}),'%Y-%m-%d') 
+                WHERE exercise_name='{EXERCISE_NAME}'
+            """)
+            st.rerun()
 
 
 tab2, tab3 = st.tabs(["Tables", "Solution"])
