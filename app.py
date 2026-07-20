@@ -55,9 +55,18 @@ with st.sidebar:
             answer_str: str = file.read()
             file.close()
         answer = con.execute(answer_str).df()
+        EXERCISE_NAME = exercise["exercise_name"][0]
+
+    if st.button("Reset"):
+        con.execute(f"""
+            UPDATE memory_state 
+            set last_reviewed='1970-01-01'
+            WHERE theme='{option}'
+        """)
+        st.rerun()
 
 
-st.header("entrez your code:")
+st.header("enter your code:")
 SQL_QUERY: str = str(st.text_area(label="votre code SQL ici", key="user_input"))
 
 
@@ -94,6 +103,21 @@ if SQL_QUERY:
 else:
     st.write("Vous n'avez pas entrez de query sql.")
 
+button_list :list[int|str]=[2,7,21]
+
+cols: list[st.delta_generator.DeltaGenerator]= st.columns(len(button_list))
+for col, n_day in zip(cols, button_list):
+    with col:
+        if  st.button(f"review in {n_day} days"):
+            con.execute(
+                f"""UPDATE memory_state
+                SET last_reviewed=strftime(date_add(current_date,{n_day}),'%Y-%m-%d') 
+                WHERE exercise_name='{EXERCISE_NAME}'
+            """)
+            st.rerun()
+
+
+
 
 tab2, tab3 = st.tabs(["Tables", "Solution"])
 
@@ -112,3 +136,5 @@ with tab3:
     if option:
         st.write(answer_str)
         st.write(answer)
+
+
