@@ -15,13 +15,15 @@ con = duckdb.connect(database="data/exercices_sql_tables.duckdb", read_only=Fals
 # ------------------------------------------------------------
 
 
-data = {
-    "theme": ["cross_joins", "window_functions"],
-    "exercise_name": ["beverages_and_food", "simple_window"],
-    "tables": [["beverages", "food_items"], "simple_window"],
-    "last_reviewed": ["1970-01-01", "1970-01-01"],
-    "answer": ["beverages_and_food.sql", ""],
+data: dict = {
+    "theme": ["cross_joins", "cross_joins"],
+    "exercise_name": ["beverages_and_food", "size_and_trademark"],
+    "tables": [["beverages", "food_items"], ["size", "trademark"]],
+    "last_reviewed": ["2026-07-20", "2026-07-19"],
+    "answer": ["beverages_and_food.sql", "size_and_trademark.sql"],
 }
+list_theme: list = list(set(data["theme"]))
+
 memory_state_df = pd.DataFrame(data)
 con.execute("""
             DROP TABLE IF EXISTS memory_state;
@@ -59,4 +61,34 @@ con.execute(f"""
             DROP TABLE IF EXISTS food_items;
             CREATE TABLE food_items AS 
             SELECT * FROM food_items;                
+            """)
+
+
+size = """
+size
+XS
+M
+L
+XL
+"""
+
+trademark = """
+trademark
+Nike
+Asphalte
+Abercrombie
+Lewis
+"""
+
+size: DataFrame = pd.read_csv(io.StringIO(size))
+trademark: DataFrame = pd.read_csv(io.StringIO(trademark))
+
+
+con.execute(f"""
+            DROP TABLE IF EXISTS size;
+            CREATE TABLE size AS 
+            SELECT * FROM size;
+            DROP TABLE IF EXISTS trademark;
+            CREATE TABLE trademark AS 
+            SELECT * FROM trademark;                
             """)
