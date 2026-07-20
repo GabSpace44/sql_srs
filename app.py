@@ -63,11 +63,13 @@ with st.sidebar:
             set last_reviewed='1970-01-01'
             WHERE theme='{option}'
         """)
+        st.session_state.user_input = ""
         st.rerun()
 
 
 st.header("enter your code:")
 SQL_QUERY: str = str(st.text_area(label="votre code SQL ici", key="user_input"))
+
 
 
 def check_users_solution(user_query: str) -> None:
@@ -88,7 +90,8 @@ def check_users_solution(user_query: str) -> None:
     try:
         result = df_duckdb[answer.columns]
         if result.compare(answer).empty:
-            pass
+            st.write("Good job, this is correct !")
+            st.balloons()
         else:
             st.write("Error, the datas are not the same")
             st.dataframe(result.compare(answer))
